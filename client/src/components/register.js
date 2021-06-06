@@ -3,16 +3,15 @@ import { Button, Container, Card, Form, FormGroup, Label, Input } from 'reactstr
 import { useHistory } from "react-router-dom";
 
 // Context
-import { UserContext } from "../providers/UserProvider";
+import { UserProfileContext } from "../providers/UserProfileProvider";
 // =========================== IMPORTS END ===========================
 
 
 export default function Register() {
     const history = useHistory();
-    const { register } = useContext(UserContext);
+    const { register } = useContext(UserProfileContext);
 
-    const [firstName, setFirstName] = useState();
-    const [lastName, setLastName] = useState();
+    const [username, setUsername] = useState();
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [confirmPassword, setConfirmPassword] = useState();
@@ -22,41 +21,37 @@ export default function Register() {
         if (password && password !== confirmPassword) {
             alert("Passwords don't match.");
         } else {
-            const user = { email, firstName, lastName };
+            const user = { email, username };
             register(user, password)
             .then(() => history.push("/"));
         }
     };
 
     return (
-    <Container style={{width: "300px"}} className="text-center ">
-        <Card>
-            <Form onSubmit={registerClick}>
-                <FormGroup>
-                    <Label htmlFor="firstName">First Name</Label>
-                    <Input id="firstName" type="text" onChange={e => setFirstName(e.target.value)} />
-                </FormGroup>
-                <FormGroup>
-                    <Label htmlFor="lastName">Last Name</Label>
-                    <Input id="lastName" type="text" onChange={e => setLastName(e.target.value)} />
-                </FormGroup>
-                <FormGroup>
-                    <Label for="email">Email</Label>
-                    <Input id="email" type="text" onChange={e => setEmail(e.target.value)} />
-                </FormGroup>
-                <FormGroup>
-                    <Label for="password">Password</Label>
-                    <Input id="password" type="password" onChange={e => setPassword(e.target.value)} />
-                </FormGroup>
-                <FormGroup>
-                    <Label for="confirmPassword">Confirm Password</Label>
-                    <Input id="confirmPassword" type="password" onChange={e => setConfirmPassword(e.target.value)} />
-                </FormGroup>
-                <FormGroup>
-                    <Button>Register</Button>
-                </FormGroup>
-            </Form>
-        </Card>
-    </Container>
-  );
+        <Container style={{width: "300px"}} className="text-center ">
+            <Card>
+                <Form onSubmit={registerClick}>
+                    <FormGroup>
+                        <Label htmlFor="username">Username</Label>
+                        <Input id="username" type="text" onChange={e => setUsername(e.target.value)} />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label for="email">Email</Label>
+                        <Input id="email" type="text" onChange={e => setEmail(e.target.value)} />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label for="password">Password</Label>
+                        <Input id="password" type="password" onChange={e => setPassword(e.target.value)} />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label for="confirmPassword">Confirm Password</Label>
+                        <Input id="confirmPassword" type="password" onChange={e => setConfirmPassword(e.target.value)} />
+                    </FormGroup>
+                    <FormGroup>
+                        <Button>Register</Button>
+                    </FormGroup>
+                </Form>
+            </Card>
+        </Container>
+    );
 }
