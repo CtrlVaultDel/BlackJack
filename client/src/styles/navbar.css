@@ -1,0 +1,9 @@
+#navbar-header {
+	background-color: #898f87;
+	font-family: "Roboto";
+	border-bottom: solid black 2px;
+	position: sticky;
+	top: 0;
+	width: 100%;
+	z-index: 1;
+}

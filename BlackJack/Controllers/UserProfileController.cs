@@ -19,13 +19,13 @@ namespace BlackJack.Controllers
         [HttpGet("{firebaseId}")]
         public IActionResult GetByFirebaseId(string firebaseId)
         {
-            var user = _userProfileRepository.GetByFirebaseId(firebaseId);
-            if (user == null) return NotFound();
+            var userProfile = _userProfileRepository.GetByFirebaseId(firebaseId);
+            if (userProfile == null) return NotFound();
 
-            return Ok(user);
+            return Ok(userProfile);
         }
 
-        [HttpGet("userProfile")]
+        [HttpGet]
         public IActionResult GetUserProfile()
         {
             var userProfile = GetCurrentUser();
@@ -38,7 +38,7 @@ namespace BlackJack.Controllers
         public IActionResult Register(UserProfile userProfile)
         {
             _userProfileRepository.Add(userProfile);
-            return CreatedAtAction(nameof(GetByFirebaseId), new { firebaseId = userProfile.FirebaseId }, userProfile);
+            return CreatedAtAction(nameof(GetByFirebaseId), new { firebaseId = userProfile.firebaseId }, userProfile);
         }
     }
 }
