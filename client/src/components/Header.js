@@ -14,7 +14,7 @@ NavLink,
 import "../styles/navbar.css";
 
 // Context
-import { UserProfileContext } from "../providers/UserProvider";
+import { UserProfileContext } from "../providers/UserProfileProvider";
 // =========================== IMPORTS END ===========================
 
 

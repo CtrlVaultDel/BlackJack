@@ -15,7 +15,6 @@ namespace BlackJack.Controllers
         protected UserProfile GetCurrentUser()
         {
             // Get User Claims
-
             var firebaseId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             return _userProfileRepository.GetByFirebaseId(firebaseId);
         }

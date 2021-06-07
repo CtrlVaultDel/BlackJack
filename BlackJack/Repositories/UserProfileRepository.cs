@@ -16,11 +16,11 @@ namespace BlackJack.Repositories
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                        SELECT Id, FirebaseId, Email, FirstName, LastName
-                        FROM [User]                    
-                        WHERE FirebaseId = @FirebaseId";
+                        SELECT id, firebaseId, email, username
+                        FROM UserProfile                   
+                        WHERE firebaseId = @firebaseId";
 
-                    DbUtils.AddParameter(cmd, "@FirebaseId", firebaseId);
+                    DbUtils.AddParameter(cmd, "@firebaseId", firebaseId);
 
                     UserProfile userProfile = null;
 
@@ -30,11 +30,10 @@ namespace BlackJack.Repositories
                         {
                             userProfile = new UserProfile()
                             {
-                                Id = DbUtils.GetInt(reader, "Id"),
-                                FirebaseId = DbUtils.GetString(reader, "FirebaseId"),
-                                Email = DbUtils.GetString(reader, "Email"),
-                                FirstName = DbUtils.GetString(reader, "FirstName"),
-                                LastName = DbUtils.GetString(reader, "LastName"),
+                                id = DbUtils.GetInt(reader, "id"),
+                                firebaseId = DbUtils.GetString(reader, "firebaseId"),
+                                email = DbUtils.GetString(reader, "email"),
+                                username = DbUtils.GetString(reader, "username")
                             };
                         }
 
@@ -51,16 +50,15 @@ namespace BlackJack.Repositories
                 conn.Open();
                 using (var cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"INSERT INTO [User] (FirebaseId, Email, FirstName, LastName)
+                    cmd.CommandText = @"INSERT INTO UserProfile (firebaseId, email, username)
                                         OUTPUT INSERTED.ID
-                                        VALUES (@FirebaseId, @Email, @FirstName, @LastName)";
+                                        VALUES (@firebaseId, @email, @username)";
 
-                    DbUtils.AddParameter(cmd, "@FirebaseId", userProfile.FirebaseId);
-                    DbUtils.AddParameter(cmd, "@Email", userProfile.Email);
-                    DbUtils.AddParameter(cmd, "@FirstName", userProfile.FirstName);
-                    DbUtils.AddParameter(cmd, "@LastName", userProfile.LastName);
+                    DbUtils.AddParameter(cmd, "@firebaseId", userProfile.firebaseId);
+                    DbUtils.AddParameter(cmd, "@email", userProfile.email);
+                    DbUtils.AddParameter(cmd, "@username", userProfile.username);
 
-                    userProfile.Id = (int)cmd.ExecuteScalar();
+                    userProfile.id = (int)cmd.ExecuteScalar();
                 }
             }
         }

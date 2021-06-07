@@ -4,30 +4,18 @@ namespace BlackJack.Models
 {
     public class UserProfile
     {
-        public int Id { get; set; }
+        public int id { get; set; }
 
         [Required]
         [StringLength(28, MinimumLength = 28)]
-        public string FirebaseId { get; set; }
+        public string firebaseId { get; set; }
 
         [Required]
         [MaxLength(255)]
-        public string Email { get; set; }
+        public string email { get; set; }
 
         [Required]
         [MaxLength(255)]
-        public string FirstName { get; set; }
-
-        [Required]
-        [MaxLength(255)]
-        public string LastName { get; set; }
-
-        public string DisplayName
-        {
-            get
-            {
-                return this.FirstName + " " + this.LastName;
-            }
-        }
+        public string username { get; set; }
     }
 }

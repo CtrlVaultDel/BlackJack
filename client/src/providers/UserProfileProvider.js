@@ -8,16 +8,18 @@ import "firebase/auth";
 
 export const UserProfileContext = createContext();
 
-export function UserProvider(props) {
+export const UserProfileProvider = props => {
     const history = useHistory();
-    const apiUrl = "/api/users";
+    const apiUrl = "/api/userProfile";
 
     const user = sessionStorage.getItem("user");
     const [isLoggedIn, setIsLoggedIn] = useState(user != null);
 
     const [isFirebaseReady, setIsFirebaseReady] = useState(false);
     useEffect(() => {
-        firebase.auth().onAuthStateChanged((u) => setIsFirebaseReady(true));
+        firebase.auth().onAuthStateChanged(u => {
+        setIsFirebaseReady(true);
+        });
     }, []);
 
     const login = (email, pw) => {
@@ -47,7 +49,7 @@ export function UserProvider(props) {
         .auth()
         .createUserWithEmailAndPassword(user.email, password)
         .then(createResponse => saveUser({ ...user, firebaseId: createResponse.user.uid }))
-        .then((savedUser) => {
+        .then(savedUser => {
             sessionStorage.setItem("user", JSON.stringify(savedUser));
             setIsLoggedIn(true);
         });
@@ -55,7 +57,7 @@ export function UserProvider(props) {
 
     const getToken = () => firebase.auth().currentUser.getIdToken();
 
-    const getUserProfile = (firebaseUserId) => {
+    const getUserProfile = firebaseUserId => {
         return getToken().then(token =>
         fetch(`${apiUrl}/${firebaseUserId}`, {
             method: "GET",
