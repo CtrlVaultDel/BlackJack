@@ -49,7 +49,7 @@ export default function Header() {
                 {/* If logged in, render the My Profile link */}
                 {isLoggedIn && (
                     <NavItem>
-                        <NavLink tag={RRNavLink} to="/userProfile">
+                        <NavLink tag={RRNavLink} to="/profile">
                             Profile
                         </NavLink>
                     </NavItem>
