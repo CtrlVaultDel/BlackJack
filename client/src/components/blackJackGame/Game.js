@@ -24,6 +24,9 @@ export default function Game () {
     // Boolean that represents whether it is still the player's turn
     const [isPlayerTurn, setIsPlayerTurn] = useState(true);
 
+    // Boolean that represents whether a game is in progress
+    const [isPlaying, setIsPlaying] = useState(false);
+
     // Default state of the player
     const basePlayerInfo = {
         cards: [],
@@ -45,16 +48,52 @@ export default function Game () {
     // Set the default state of the house
     const [houseInfo, setHouseInfo] = useState(baseHouseInfo);
 
-    // Retrieve and set the state of the player's money
-    useEffect(() => {
+    // Initialize player's money
+    const initializeMoney = () => {
         getUserInfo()
         .then(user => {
             let player = {...playerInfo}
             player.money = user.money
             setPlayerInfo(player);
-        })
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+        });
+    }
+
+    // Retrieve and set the state of the player's money
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    useEffect(() => initializeMoney, [])
+    
+    const startGame = () => {
+        // Update state to let app know a game is in progress
+        setIsPlaying(true);
+
+        // Reset player info but keep current money
+        setIsPlayerTurn(true)
+        initializeMoney();
+        let player = {...playerInfo};
+        player.cards = [];
+        player.totalValue = 0;
+        setPlayerInfo(player);
+
+        // Reset house info
+        setHouseInfo(baseHouseInfo);
+
+        // *************
+        // CURRENT ISSUE
+        // isPlayerTurn is not updating in time so all hits go straight to the player
+        // *************
+
+        // Draw two cards for the player
+        hit()
+        hit()
+        setIsPlayerTurn(false);
+
+        // Draw two cards for the house
+        hit()
+        hit()
+
+        // Allow the player to continue
+        setIsPlayerTurn(true)
+    }
 
     // Takes a card and returns its numerical value
     const getValue = card => {
@@ -105,7 +144,10 @@ export default function Game () {
                 else newValue += value
             })
             house.totalValue = newValue
-            if(newValue > 21) house.bust = true
+            if(newValue > 21) {
+                house.bust = true
+                setIsPlayerTurn(false)
+            }
             setHouseInfo(house);
         }
     }
@@ -161,6 +203,13 @@ export default function Game () {
                 </div>
             </div>
 
+            <Button 
+                disabled={isPlaying}
+                onClick={() => {
+                    startGame()
+                }}>
+                Start Game
+            </Button>
             <Button 
                 disabled={playerInfo.bust || !isPlayerTurn}
                 onClick={() => {
