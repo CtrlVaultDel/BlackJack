@@ -7,7 +7,7 @@ import { UserProfileContext } from "../providers/UserProfileProvider";
 // =========================== IMPORTS END ===========================
 
 
-    export default function Login() {
+    export default function Login () {
     const history = useHistory();
     const { login } = useContext(UserProfileContext);
 

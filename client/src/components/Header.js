@@ -18,7 +18,7 @@ import { UserProfileContext } from "../providers/UserProfileProvider";
 // =========================== IMPORTS END ===========================
 
 
-export default function Header() {
+export default function Header () {
     const { isLoggedIn, logout } = useContext(UserProfileContext);
     const [isOpen, setIsOpen] = useState(false);
     const toggle = () => setIsOpen(!isOpen);

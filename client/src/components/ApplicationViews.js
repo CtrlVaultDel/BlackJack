@@ -3,10 +3,11 @@ import { Switch, Route, Redirect } from "react-router-dom";
 import { UserProfileContext } from "../providers/UserProfileProvider";
 import Login from "./Login";
 import Register from "./Register";
+import Game from "./blackJackGame/Game";
 
 // Game Components
 
-export default function ApplicationViews() {
+export default function ApplicationViews () {
     const { isLoggedIn } = useContext(UserProfileContext);
 
     return (
@@ -28,6 +29,9 @@ export default function ApplicationViews() {
                 </Route>
 
                 {/* ----------------------- GAME ----------------------- */}
+                <Route path="/play">
+                    <Game />
+                </Route>
 
             </Switch>
         </main>

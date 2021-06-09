@@ -7,7 +7,7 @@ import { UserProfileContext } from "../providers/UserProfileProvider";
 // =========================== IMPORTS END ===========================
 
 
-export default function Register() {
+export default function Register () {
     const history = useHistory();
     const { register } = useContext(UserProfileContext);
 
