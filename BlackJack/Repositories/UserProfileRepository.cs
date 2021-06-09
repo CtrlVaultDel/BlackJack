@@ -16,7 +16,7 @@ namespace BlackJack.Repositories
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                        SELECT id, firebaseId, email, username
+                        SELECT id, firebaseId, email, username, money
                         FROM UserProfile                   
                         WHERE firebaseId = @firebaseId";
 
@@ -33,7 +33,8 @@ namespace BlackJack.Repositories
                                 id = DbUtils.GetInt(reader, "id"),
                                 firebaseId = DbUtils.GetString(reader, "firebaseId"),
                                 email = DbUtils.GetString(reader, "email"),
-                                username = DbUtils.GetString(reader, "username")
+                                username = DbUtils.GetString(reader, "username"),
+                                money = DbUtils.GetInt(reader, "money")
                             };
                         }
 

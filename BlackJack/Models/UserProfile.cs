@@ -17,5 +17,7 @@ namespace BlackJack.Models
         [Required]
         [MaxLength(255)]
         public string username { get; set; }
+
+        public int money { get; set; }
     }
 }
