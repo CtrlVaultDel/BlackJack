@@ -1,0 +1,11 @@
+.playingCard {
+	max-width: 13%;
+	margin: 5px;
+	background: gray;
+	border: solid black 1px;
+	display: flex;
+}
+
+.cards {
+	display: flex;
+}

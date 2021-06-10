@@ -2,10 +2,13 @@
 import React, { useState, useContext, useEffect } from "react";
 
 // Reactstrap
-import { Button } from "reactstrap";
+import { Button, Container } from "reactstrap";
 
 // Context
 import { UserProfileContext } from "../../providers/UserProfileProvider";
+
+// Styles
+import "../../styles/card.css";
 
 export default function Game () {
     const { getUserInfo } = useContext(UserProfileContext);
@@ -19,10 +22,10 @@ export default function Game () {
     ]
 
     // Mutable array of cards that will be drawn from
-    const [gameCards, setGameCards] = useState([...allCards]);
+    let gameCards = [...allCards];
 
     // Boolean that represents whether it is still the player's turn
-    const [isPlayerTurn, setIsPlayerTurn] = useState(true);
+    let isPlayerTurn = true;
 
     // Boolean that represents whether a game is in progress
     const [isPlaying, setIsPlaying] = useState(false);
@@ -67,7 +70,7 @@ export default function Game () {
         setIsPlaying(true);
 
         // Reset player info but keep current money
-        setIsPlayerTurn(true)
+        isPlayerTurn = true;
         initializeMoney();
         let player = {...playerInfo};
         player.cards = [];
@@ -77,22 +80,17 @@ export default function Game () {
         // Reset house info
         setHouseInfo(baseHouseInfo);
 
-        // *************
-        // CURRENT ISSUE
-        // isPlayerTurn is not updating in time so all hits go straight to the player
-        // *************
-
         // Draw two cards for the player
         hit()
         hit()
-        setIsPlayerTurn(false);
+        isPlayerTurn = false;
 
         // Draw two cards for the house
         hit()
         hit()
 
         // Allow the player to continue
-        setIsPlayerTurn(true)
+        isPlayerTurn = true;
     }
 
     // Takes a card and returns its numerical value
@@ -124,6 +122,7 @@ export default function Game () {
         let allTotals = [];
         let newValue = 0;
         if(isPlayerTurn){
+            console.log("Calculating Total For Player!")
             let player = {...playerInfo}
             player.cards.forEach(card => allTotals.push(getValue(card)))
             allTotals = allTotals.sort(function(a, b){return b-a})
@@ -136,6 +135,7 @@ export default function Game () {
             setPlayerInfo(player)
         }
         else {
+            console.log("Calculating Total For House!")
             let house = {...houseInfo}
             house.cards.forEach(card => allTotals.push(getValue(card)))
             allTotals = allTotals.sort(function(a, b){return b-a})
@@ -145,8 +145,8 @@ export default function Game () {
             })
             house.totalValue = newValue
             if(newValue > 21) {
-                house.bust = true
-                setIsPlayerTurn(false)
+                house.bust = true;
+                isPlayerTurn = false;
             }
             setHouseInfo(house);
         }
@@ -154,18 +154,27 @@ export default function Game () {
 
     // Handles drawing a new card for the Player or House
     const hit = () => {
+        // Get a random index between 0 and the last index of gameCards
         let cardIndex = Math.floor(Math.random()*gameCards.length);
+
+        // Remove the randomly "drawn" card from gameCards and saave it to cardDrawn
         let cardDrawn = gameCards.splice(cardIndex,1)[0];
+
+        // If it is the player's turn...
         if(isPlayerTurn) {
             let player = {...playerInfo}
             player.cards.push(cardDrawn);
             setPlayerInfo(player);
         }
+
+        // If it is the house's turn...
         else {
             let house = {...houseInfo}
             house.cards.push(cardDrawn)
             setHouseInfo(house);
         }
+
+        // Calculate the new value for either the player or house
         calculateTotal();
 
         // Determine if a reshuffle is needed
@@ -174,7 +183,7 @@ export default function Game () {
             if(playerInfo.cards.length) playerInfo.cards.forEach(card => cardsInPlay.push(card))
             if(houseInfo.cards.length) houseInfo.cards.forEach(card => cardsInPlay.push(card))
             let newGameCards = allCards.filter(card => !cardsInPlay.includes(card));
-            setGameCards(newGameCards);
+            gameCards = newGameCards;
         }
     }    
 
@@ -183,7 +192,13 @@ export default function Game () {
             <div id="houseSection">
                 HOUSE
                 <div className="cards">
-                    {houseInfo.cards.length ? houseInfo.cards.map(card => <div key={card}>{card}</div>) : <div>No Cards</div>}
+                    {houseInfo.cards.length ? houseInfo.cards.map(card => 
+                        <div key={card}>
+                            <img className="playingCard" src={`cards/${card}.png`} alt={card} />
+                        </div>) 
+                        : 
+                        <div>No Cards</div>
+                    }
                 </div>
                 <div className="value">
                     {houseInfo.totalValue} {houseInfo.bust ? "Bust!" : ""} {houseInfo.totalValue === 21 ? "BlackJack!" : ""}
@@ -193,7 +208,13 @@ export default function Game () {
             <div id="playerSection">
                 PLAYER
                 <div className="cards">
-                    {playerInfo.cards.length ? playerInfo.cards.map(card => <div key={card}>{card}</div>) : <div>No Cards</div>}
+                    {playerInfo.cards.length ? playerInfo.cards.map(card => 
+                        <div key={card}>
+                            <img className="playingCard" src={`cards/${card}.png`} alt={card} />
+                        </div>) 
+                        : 
+                        <div>No Cards</div>
+                    }
                 </div>
                 <div className="value">
                     {playerInfo.totalValue} {playerInfo.bust ? "Bust!" : ""} {playerInfo.totalValue === 21 ? "BlackJack!" : ""}
@@ -211,7 +232,7 @@ export default function Game () {
                 Start Game
             </Button>
             <Button 
-                disabled={playerInfo.bust || !isPlayerTurn}
+                disabled={playerInfo.bust || !isPlayerTurn || !isPlaying}
                 onClick={() => {
                 hit()
             }}>
@@ -219,9 +240,9 @@ export default function Game () {
             </Button>
 
             <Button 
-                disabled={!isPlayerTurn}
+                disabled={!isPlayerTurn || !isPlaying}
                 onClick={() => {
-                setIsPlayerTurn(false)
+                isPlayerTurn = false;
             }}>
                 Stay
             </Button>
