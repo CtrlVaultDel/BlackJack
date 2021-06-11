@@ -1,13 +1,20 @@
+// React
 import React, { useContext } from "react";
+
+// React Router DOM
 import { Switch, Route, Redirect } from "react-router-dom";
+
+// Context
 import { UserProfileContext } from "../providers/UserProfileProvider";
+
+// Components
 import Login from "./Login";
 import Register from "./Register";
 import Game from "./blackJackGame/Game";
+// =========================== IMPORTS END ===========================
 
-// Game Components
 
-export default function ApplicationViews () {
+const ApplicationViews = () => {
     const { isLoggedIn } = useContext(UserProfileContext);
 
     return (
@@ -37,3 +44,5 @@ export default function ApplicationViews () {
         </main>
     );
 };
+
+export default ApplicationViews;

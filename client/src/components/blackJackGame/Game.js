@@ -2,15 +2,20 @@
 import React, { useState, useContext, useEffect } from "react";
 
 // Reactstrap
-import { Button, Container } from "reactstrap";
+import { Button } from "reactstrap";
+
+// Components
+import Card from "./Card";
 
 // Context
 import { UserProfileContext } from "../../providers/UserProfileProvider";
 
 // Styles
 import "../../styles/card.css";
+// =========================== IMPORTS END ===========================
 
-export default function Game () {
+
+const Game = () => {
     const { getUserInfo } = useContext(UserProfileContext);
 
     // Holds a full deck of cards. Will NOT be altered during the game.
@@ -25,7 +30,7 @@ export default function Game () {
     let gameCards = [...allCards];
 
     // Boolean that represents whether it is still the player's turn
-    let isPlayerTurn = true;
+    const [isPlayerTurn, setIsPlayerTurn] = useState(true);
 
     // Boolean that represents whether a game is in progress
     const [isPlaying, setIsPlaying] = useState(false);
@@ -69,9 +74,7 @@ export default function Game () {
         // Update state to let app know a game is in progress
         setIsPlaying(true);
 
-        // Reset player info but keep current money
-        isPlayerTurn = true;
-        initializeMoney();
+        // Reset player info 
         let player = {...playerInfo};
         player.cards = [];
         player.totalValue = 0;
@@ -81,16 +84,17 @@ export default function Game () {
         setHouseInfo(baseHouseInfo);
 
         // Draw two cards for the player
-        hit()
-        hit()
-        isPlayerTurn = false;
-
+        setIsPlayerTurn(true);
+        hit();
+        hit();
+        
         // Draw two cards for the house
-        hit()
-        hit()
+        setIsPlayerTurn(false);
+        hit();
+        hit();
 
         // Allow the player to continue
-        isPlayerTurn = true;
+        setIsPlayerTurn(true);
     }
 
     // Takes a card and returns its numerical value
@@ -122,7 +126,6 @@ export default function Game () {
         let allTotals = [];
         let newValue = 0;
         if(isPlayerTurn){
-            console.log("Calculating Total For Player!")
             let player = {...playerInfo}
             player.cards.forEach(card => allTotals.push(getValue(card)))
             allTotals = allTotals.sort(function(a, b){return b-a})
@@ -131,11 +134,11 @@ export default function Game () {
                 else newValue += value
             })
             player.totalValue = newValue
+            if(newValue === 21) setIsPlayerTurn(false);
             if(newValue > 21) player.bust = true;
             setPlayerInfo(player)
         }
         else {
-            console.log("Calculating Total For House!")
             let house = {...houseInfo}
             house.cards.forEach(card => allTotals.push(getValue(card)))
             allTotals = allTotals.sort(function(a, b){return b-a})
@@ -144,10 +147,7 @@ export default function Game () {
                 else newValue += value
             })
             house.totalValue = newValue
-            if(newValue > 21) {
-                house.bust = true;
-                isPlayerTurn = false;
-            }
+            if(newValue > 21) house.bust = true;
             setHouseInfo(house);
         }
     }
@@ -193,9 +193,7 @@ export default function Game () {
                 HOUSE
                 <div className="cards">
                     {houseInfo.cards.length ? houseInfo.cards.map(card => 
-                        <div key={card}>
-                            <img className="playingCard" src={`cards/${card}.png`} alt={card} />
-                        </div>) 
+                        <Card key={card} card={card}/>) 
                         : 
                         <div>No Cards</div>
                     }
@@ -209,9 +207,7 @@ export default function Game () {
                 PLAYER
                 <div className="cards">
                     {playerInfo.cards.length ? playerInfo.cards.map(card => 
-                        <div key={card}>
-                            <img className="playingCard" src={`cards/${card}.png`} alt={card} />
-                        </div>) 
+                        <Card key={card} card={card}/>) 
                         : 
                         <div>No Cards</div>
                     }
@@ -223,7 +219,9 @@ export default function Game () {
                     Money: {playerInfo.money}
                 </div>
             </div>
+            
 
+            {/* START */}
             <Button 
                 disabled={isPlaying}
                 onClick={() => {
@@ -231,6 +229,10 @@ export default function Game () {
                 }}>
                 Start Game
             </Button>
+            {/* ------ */}
+
+
+            {/* HIT */}
             <Button 
                 disabled={playerInfo.bust || !isPlayerTurn || !isPlaying}
                 onClick={() => {
@@ -238,15 +240,21 @@ export default function Game () {
             }}>
                 Hit
             </Button>
+            {/* ------ */}
 
+
+            {/* STAY */}
             <Button 
                 disabled={!isPlayerTurn || !isPlaying}
                 onClick={() => {
-                isPlayerTurn = false;
+                setIsPlayerTurn(false);
             }}>
                 Stay
             </Button>
+            {/* ------ */}
 
         </>
     )
 }
+
+export default Game;

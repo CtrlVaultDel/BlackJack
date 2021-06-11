@@ -18,7 +18,7 @@ import { UserProfileContext } from "../providers/UserProfileProvider";
 // =========================== IMPORTS END ===========================
 
 
-export default function Header () {
+const Header = () => {
     const { isLoggedIn, logout } = useContext(UserProfileContext);
     const [isOpen, setIsOpen] = useState(false);
     const toggle = () => setIsOpen(!isOpen);
@@ -93,3 +93,5 @@ export default function Header () {
         </Navbar >
     );
 }
+
+export default Header;
